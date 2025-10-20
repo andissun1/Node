@@ -1,0 +1,20 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "This is app",
+  "keywords": [
+    "js",
+    "node"
+  ],
+  "license": "ISC",
+  "author": "andissun",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "yargs": "^18.0.0"
+  }
+}
