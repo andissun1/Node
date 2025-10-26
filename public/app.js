@@ -1,20 +1,51 @@
-document.addEventListener('click', (event) => {
-  if (event.target.dataset.type === 'remove') {
-    const id = event.target.dataset.id;
+const ul = document.querySelector('ul');
 
+ul.addEventListener('click', ({ target }) => {
+  // Для удобства вынес дочерние элементы глобальнее
+  const title = target.closest('li').firstElementChild;
+  const removeButton = target.closest('li').lastElementChild.lastElementChild;
+  const updateButton = removeButton.previousElementSibling;
+
+  // Удаление
+  if (target.dataset.type === 'remove') {
+    const id = target.dataset.id;
     removeItem(id).then(() => {
-      event.target.closest('li').remove();
+      target.closest('li').remove();
     });
   }
 
-  if (event.target.dataset.type === 'edit') {
-    const payload = prompt('Введите новое название');
-    if (!payload) return;
-    const id = event.target.dataset.id;
+  // Редактирование
+  if (target.dataset.type === 'edit') {
+    let input = document.createElement('input');
+    input.value = title.textContent;
+    title.replaceWith(input);
 
-    editItem(id, payload).then(() => {
-      event.target.closest('li').childNodes[0].textContent = payload;
-    });
+    removeButton.textContent = 'Отмена';
+    removeButton.dataset.type = 'cancel';
+    updateButton.textContent = 'Обновить';
+    updateButton.dataset.type = 'update';
+
+    const payload = title.value;
+    if (!payload) return;
+  }
+
+  if (target.dataset.type === 'cancel' || target.dataset.type === 'update') {
+    const span = document.createElement('span');
+    if (target.dataset.type === 'cancel') {
+      getItem(removeButton.dataset.id).then((response) => {
+        span.textContent = response.title;
+        title.replaceWith(span);
+      });
+    } else if (target.dataset.type === 'update') {
+      editItem(updateButton.dataset.id, title.value).then((response) => {
+        span.textContent = response.title;
+        title.replaceWith(span);
+      });
+    }
+    removeButton.textContent = 'X';
+    removeButton.dataset.type = 'remove';
+    updateButton.textContent = 'Редактировать';
+    updateButton.dataset.type = 'edit';
   }
 });
 
@@ -25,11 +56,15 @@ async function removeItem(id) {
 }
 
 async function editItem(id, title) {
-  await fetch(`/${id}`, {
+  return await fetch(`/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ title }),
-  });
+  }).then((response) => response.json());
+}
+
+async function getItem(id) {
+  return fetch(`/${id}`).then((response) => response.json());
 }

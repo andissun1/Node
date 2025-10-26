@@ -15,7 +15,13 @@ async function addNote(title) {
   console.log(chalk.bgGreen('Заметка добавлена!'));
 }
 
-async function getNotes(params) {
+async function getNotes(id) {
+  if (id) {
+    const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
+    const array = JSON.parse(notes);
+    const note = array.find((note) => note.id === id);
+    return note;
+  }
   const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
   return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
 }
@@ -33,9 +39,10 @@ async function editNote(id, title) {
   const notes = await getNotes();
   const noteForEdit = notes.findIndex((note) => note.id === id);
   notes[noteForEdit].title = title;
-  console.log(notes);
 
   await fs.writeFile(notesPath, JSON.stringify(notes));
+
+  return notes[noteForEdit];
 }
 
 module.exports = {
