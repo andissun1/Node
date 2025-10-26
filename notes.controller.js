@@ -4,8 +4,6 @@ const chalk = require('chalk');
 
 const notesPath = path.join(__dirname, 'db.json');
 
-const notes = [];
-
 async function addNote(title) {
   const notes = await getNotes();
   const note = {
@@ -26,7 +24,7 @@ async function removeNote(noteID) {
   const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
   const checkedNotes = Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
   const newNotesArray = checkedNotes.filter((note) => note.id !== noteID);
-  const deletedNote = checkedNotes.filter((note) => note.id === noteID);
+  const deletedNote = checkedNotes.find((note) => note.id === noteID);
   await fs.writeFile(notesPath, JSON.stringify(newNotesArray));
   console.log(chalk.bgGreen(`Заметка "${deletedNote[0].title}" была удалена!`));
 }
@@ -40,8 +38,23 @@ async function printNotes(params) {
   });
 }
 
+// Новый функционал
+async function editNote(noteID, title) {
+  const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
+  const checkedNotes = Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
+  const editedNote = checkedNotes.findIndex((note) => note.id === noteID);
+  if (editedNote < 0) return console.log(chalk.bgRed(`Заметка не найдена!`));
+
+  checkedNotes[editedNote].title = title;
+  await fs.writeFile(notesPath, JSON.stringify(checkedNotes));
+  console.log(
+    chalk.bgGreen(`Заметка изменена! Новое название: "${checkedNotes[editedNote].title}"`)
+  );
+}
+
 module.exports = {
   addNote,
   printNotes,
   removeNote,
+  editNote,
 };
