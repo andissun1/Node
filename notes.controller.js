@@ -1,48 +1,43 @@
-const fs = require('fs/promises');
-const path = require('path');
 const chalk = require('chalk');
+const Note = require('./models/Note');
 
-const notesPath = path.join(__dirname, 'db.json');
-
-async function addNote(title) {
-  const notes = await getNotes();
-  const note = {
-    title,
-    id: Date.now().toString(),
-  };
-  notes.push(note);
-  await fs.writeFile(notesPath, JSON.stringify(notes));
+async function addNote(title, owner) {
+  await Note.create({ title, owner });
   console.log(chalk.bgGreen('Заметка добавлена!'));
 }
 
 async function getNotes(id) {
-  if (id) {
-    const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
-    const array = JSON.parse(notes);
-    const note = array.find((note) => note.id === id);
-    return note;
+  if (id && id !== 'favicon.ico') {
+    console.log(id);
+    const response = await Note.findById(id);
+    return response._doc;
   }
-  const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
-  return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
+  const notes = await Note.find();
+
+  return notes;
 }
 
-async function removeNote(noteID) {
-  const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
-  const checkedNotes = Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
-  const newNotesArray = checkedNotes.filter((note) => note.id !== noteID);
-  const deletedNote = checkedNotes.find((note) => note.id === noteID);
-  await fs.writeFile(notesPath, JSON.stringify(newNotesArray));
-  console.log(chalk.bgRedBright(`Заметка "${deletedNote.title}" была удалена!`));
+async function removeNote(noteID, owner) {
+  const result = await Note.deleteOne({ _id: noteID, owner });
+  console.log(result);
+
+  if (result.deletedCount === 0) throw new Error('Нет прав на удаление');
+
+  console.log(chalk.bgRedBright(`Заметка "${noteID}" была удалена!`));
 }
 
-async function editNote(id, title) {
-  const notes = await getNotes();
-  const noteForEdit = notes.findIndex((note) => note.id === id);
-  notes[noteForEdit].title = title;
+async function editNote(id, title, owner) {
+  const note = await Note.findOneAndUpdate(
+    { _id: id, owner },
+    { title },
+    { returnDocument: 'after' }
+  );
 
-  await fs.writeFile(notesPath, JSON.stringify(notes));
+  if (!note) {
+    throw new Error('Нет заметки для редактирования');
+  }
 
-  return notes[noteForEdit];
+  return note._doc;
 }
 
 module.exports = {

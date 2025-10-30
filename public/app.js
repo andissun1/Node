@@ -1,4 +1,4 @@
-const ul = document.querySelector('ul');
+const ul = document.querySelector('.list-group');
 
 ul.addEventListener('click', ({ target }) => {
   // Для удобства вынес дочерние элементы глобальнее
@@ -37,8 +37,10 @@ ul.addEventListener('click', ({ target }) => {
         title.replaceWith(span);
       });
     } else if (target.dataset.type === 'update') {
-      editItem(updateButton.dataset.id, title.value).then((response) => {
-        span.textContent = response.title;
+      editItem(updateButton.dataset.id, title.value).then((note) => {
+        span.textContent = note.title;
+        console.log(note);
+
         title.replaceWith(span);
       });
     }

@@ -13,9 +13,10 @@
     <title><%= title%></title>
   </head>
   <body>
-    <% if (created) {%>
+    <%- include('./partials/user-header') %> <% if (created) {%>
     <div class="alert alert-success">Замета была создана</div>
-
+    <%}%> <% if (error) {%>
+    <div class="alert alert-danger">Что-то пошло не так</div>
     <%}%>
 
     <div class="container">
@@ -35,6 +36,8 @@
           <% for (let i = 0; i < notes.length; i++) {%>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span class="title"><%= notes[i].title %></span>
+            <span class="title"><%= notes[i].owner %></span>
+            <% if (notes[i].owner === userEmail) { %>
             <div class="actions">
               <button class="btn btn-primary" data-type="edit" data-id="<%=notes[i].id%>">
                 Редактировать
@@ -47,6 +50,7 @@
                 &times;
               </button>
             </div>
+            <%}%>
           </li>
           <%}%>
         </ul>
