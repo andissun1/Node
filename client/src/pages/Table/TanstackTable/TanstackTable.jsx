@@ -8,7 +8,6 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import './TanstackTable.css';
-// import DATA from './MOCK_DATA.json';
 import { COLUMNS } from './columns';
 
 export const TanstackTable = ({ serverData }) => {

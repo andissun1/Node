@@ -22,8 +22,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.options('/', cors());
 
-// app.get('/', (req, res) => {});
-
 app.post('/login', async (req, res) => {
   try {
     const token = await loginUser(req.body.email, req.body.password);

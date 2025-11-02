@@ -1,8 +1,6 @@
 const form = require('./models/Form');
 
 async function addForm(formData) {
-  console.log(formData);
-
   await form.create({ ...formData });
   console.log('Форма добавлена!');
 }

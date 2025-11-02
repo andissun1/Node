@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { SERVER_URL } from '../../constants';
 import { useNavigate } from 'react-router';
 
-export const Table = (props) => {
+export const Table = () => {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
 
@@ -14,18 +14,11 @@ export const Table = (props) => {
       credentials: 'include',
       method: 'GET',
     })
-      .then((res) => {
-        console.log(res);
-
-        if (res.status === 403) return navigate('/auth');
-        return res.json();
-      })
+      .then((res) => (res.status === 403 ? navigate('/auth') : res.json()))
       .then((res) => setData(res));
   }, []);
 
   if (!data) return <h2>Загрузка...</h2>;
-
-  console.log(data);
 
   return (
     <div className={style.tablePage}>

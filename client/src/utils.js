@@ -9,8 +9,9 @@ const validationRules = {
   max: (value, limiter) => {
     return value.length < limiter;
   },
-  confirmPassword: (value, _, ref) => {
-    return value === ref;
+  isEmail: (value) => {
+    const result = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+    return result;
   },
 };
 

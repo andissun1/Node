@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Input } from '../../components/Input/Input';
 import style from './MainPage.module.css';
 import { initialState, schemes } from './validateSchemes';
-import { redirect, useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { validator } from '../../utils';
 import { SERVER_URL } from '../../constants';
 
-export const MainPage = (props) => {
+export const MainPage = () => {
   const address = useLocation().pathname.replaceAll('/', '') || 'client';
   const [formData, setFormData] = useState(initialState[address]);
   const [error, setError] = useState({});
@@ -38,7 +38,7 @@ export const MainPage = (props) => {
 
     switch (address) {
       case 'auth':
-        await fetch(`${SERVER_URL}/login`, {
+        fetch(`${SERVER_URL}/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -48,7 +48,6 @@ export const MainPage = (props) => {
         })
           .then((res) => {
             if (!res.ok) return res.json();
-
             setFormData(initialState[address]);
             navigate('/table');
           })
@@ -57,18 +56,15 @@ export const MainPage = (props) => {
             setInfo(message);
           })
           .catch((error) => {
-            console.log(error);
-
             setError({
               ...error,
               server:
                 'Данные не получилось отправить. Попробуйте повторить немного позже.',
             });
           });
-        console.log('Вход');
         break;
       case 'register':
-        await fetch(`${SERVER_URL}/register`, {
+        fetch(`${SERVER_URL}/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -80,7 +76,6 @@ export const MainPage = (props) => {
         })
           .then((res) => {
             if (!res.ok) return res.json();
-
             setFormData(initialState[address]);
             setInfo(
               'Новый аккаунт создан. Сейчас вас перенаправим на страницу авторизации.'
@@ -95,18 +90,15 @@ export const MainPage = (props) => {
             setInfo(message);
           })
           .catch((error) => {
-            console.log(error);
-
             setError({
               ...error,
               server:
                 'Данные не получилось отправить. Попробуйте повторить немного позже.',
             });
           });
-        console.log('Регистрация', formData);
         break;
       case 'client':
-        await fetch(`${SERVER_URL}`, {
+        fetch(`${SERVER_URL}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -125,7 +117,6 @@ export const MainPage = (props) => {
                 'Данные не получилось отправить. Попробуйте повторить немного позже.',
             });
           });
-
         break;
       default:
         break;
