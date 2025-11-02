@@ -1,0 +1,11 @@
+:root {
+  --light_text: rgb(85, 85, 87);
+  --light_border: rgb(233, 233, 233);
+  --green: rgb(86, 188, 122);
+}
+
+body {
+  margin: 0;
+  background-color: rgb(226, 235, 239);
+  font-family: 'Times New Roman', Times, serif;
+}

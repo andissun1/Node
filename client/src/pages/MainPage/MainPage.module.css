@@ -1,0 +1,41 @@
+.mainPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.form {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 30px;
+
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.151);
+}
+
+.submitButton {
+  background-color: var(--green);
+  border: transparent;
+  border-radius: 12px;
+  height: 30px;
+
+  font-size: inherit;
+  color: white;
+  cursor: pointer;
+}
+
+.redirectButton {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.submitButton:active {
+  border: 2px solid white;
+}
