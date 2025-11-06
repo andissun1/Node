@@ -55,6 +55,8 @@ app.post('/register', async (request, response) => {
 
     response.redirect('/login');
   } catch (error) {
+    console.log(error.message);
+
     if (error.code === 11000) {
       response.render('register', {
         title: 'Express App',
